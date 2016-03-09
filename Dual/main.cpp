@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include <boost/math/distributions/normal.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -12,6 +13,11 @@
 
 #include "Dual.h"
 //#include "dual_expression.h"
+
+const double cdfforderiv(const double derivative)
+{
+	return std::exp(-derivative) / std::sqrt(2.0 * 3.14 * derivative);
+}
 
 
 int main()
@@ -90,15 +96,22 @@ int main()
     const cp::Dual<double> forwardLibor(value);
 
     const cp::Dual<double> d1 = (log(forwardLibor / strike)
-            + 0.5 * volatility * volatility * 30 / 360) 
-                / (volatility * std::sqrt(30 / 360));
+            + 0.5 * volatility * volatility * 30.0 / 360.0) 
+                / (volatility * std::sqrt(30.0 / 360.0));
 
+	std::cout << "d1_derivative:" << d1._derivative << std::endl;
     const cp::Dual<double> d2 = (log(forwardLibor / strike)
-            - 0.5 * volatility * volatility * 30 / 360) 
-                / (volatility * std::sqrt(30 / 360));
+            - 0.5 * volatility * volatility * 30.0 / 360.0) 
+                / (volatility * std::sqrt(30.0 / 360.0));
 
-    const cp::Dual<double> capletPrice6m = 180 / 360 * discountFactor[4] * (forwardLibor) * cdf(norm, d2._value) - strike * cdf(norm, d2._value); 
+	std::cout << "d2_derivative:" << d2._derivative << std::endl;
 
+	const cp::Dual<double> d1N(cdf(norm, d1._value), cdfforderiv(d1._derivative));
+	const cp::Dual<double> d2N(cdf(norm, d2._value), cdfforderiv(d2._derivative));
+
+    const cp::Dual<double> capletPrice6m = 180.0 / 360.0 * discountFactor[4] * (forwardLibor) * d1N - strike * d2N; 
+
+	std::cout << capletPrice6m._value << std::endl;
     //cp::black<double, double, double, double, double> f;
     //double price = f(strike, maturity, volatility, forwardRate, dayCountFraction);
     //std::cout << price << std::endl;
