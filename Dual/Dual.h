@@ -18,10 +18,6 @@ namespace cp {
         {
         }
 
-        Dual(value_type value)
-        : _value(value), _derivative(1.0)
-        {
-        }
 
     public:
         value_type _value;

@@ -89,7 +89,7 @@ int main()
     const double volatility = 0.2;
 	const double value = 180.0 / 360.0
 		* (discountFactor[3] / discountFactor[4] - 1.0);
-    const cp::Dual<double> forwardLibor(value);
+    const cp::Dual<double> forwardLibor(value, 1.0);
 
 	const cp::Dual<double> fs = forwardLibor / strike;
 	const cp::Dual<double> assetOrNothing = log(fs);
