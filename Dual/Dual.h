@@ -119,7 +119,7 @@ namespace cp {
 		return Dual<double>(std::log(x._value), x._derivative / x._value);
 	}
 
-	Dual<double> cdfOfNormalDistribution(const Dual<double>& x)
+	Dual<double> cdfOfStandardNormalDistribution(const Dual<double>& x)
 	{
 		boost::math::normal normalDistribution(0, 1);
 		double pi = boost::math::constants::pi<double>();

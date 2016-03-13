@@ -83,52 +83,74 @@ int main()
 
 
     // example: calculate 6M caplet
-    boost::math::normal norm(0,1);
-
     const double strike = 0.01;
-    const double volatility = 0.2;
-	const double value = 180.0 / 360.0
+    const double volatility6M = 0.2;
+	const double forwardLiborValue6M = 180.0 / 360.0
 		* (discountFactor[3] / discountFactor[4] - 1.0);
-    const cp::Dual<double> forwardLibor(value, 1.0);
+    const cp::Dual<double> forwardLibor6M(forwardLiborValue6M, 1.0);
 
-	const cp::Dual<double> fs = forwardLibor / strike;
-	const cp::Dual<double> assetOrNothing = log(fs);
-	const double cashOrNothing = 0.5 * volatility * volatility * 30.0 / 360.0;
-    const cp::Dual<double> d1 = (assetOrNothing + cashOrNothing) 
-                / (volatility * std::sqrt(30.0 / 360.0));
+    const cp::Dual<double> d1 = (log(forwardLibor6M / strike) 
+		+ 0.5 * volatility6M * volatility6M * 180.0 / 360.0)
+        / (volatility6M * std::sqrt(180.0 / 360.0));
 
 	std::cout << "d1_derivative:" << d1._derivative << std::endl;
-    const cp::Dual<double> d2 = (log(forwardLibor / strike)
-            - 0.5 * volatility * volatility * 30.0 / 360.0) 
-                / (volatility * std::sqrt(30.0 / 360.0));
+    const cp::Dual<double> d2 = (log(forwardLibor6M / strike)
+            - 0.5 * volatility6M * volatility6M * 180.0 / 360.0) 
+                / (volatility6M * std::sqrt(180.0 / 360.0));
 
 	std::cout << "d2_derivative:" << d2._derivative << std::endl;
 
-    const cp::Dual<double> capletPrice6m = 180.0 / 360.0 * discountFactor[4] 
-		* (forwardLibor * cdfOfNormalDistribution(d1) 
-			- strike * cdfOfNormalDistribution(d2));
+    const cp::Dual<double> capletPrice6M = 180.0 / 360.0 * discountFactor[4] 
+		* (forwardLibor6M * cdfOfStandardNormalDistribution(d1) 
+			- strike * cdfOfStandardNormalDistribution(d2));
 
-	std::cout << "capletPrice6m:" << capletPrice6m._value << std::endl;
-    //cp::black<double, double, double, double, double> f;
-    //double price = f(strike, maturity, volatility, forwardRate, dayCountFraction);
-    //std::cout << price << std::endl;
+	std::cout << "capletPrice6m:" << capletPrice6M._value << std::endl;
+    
+	// calculate 1Y caplet
+	const double volatility1Y = 0.5;
+	const double forwardLiborValue1Y = 180.0 / 360.0
+		* (discountFactor[4] / discountFactor[5] - 1.0);
+	const cp::Dual<double> forwardLibor1Y(forwardLiborValue1Y, 0.0);
 
-    // TODO: be able to input other type as template arguments 
+	const cp::Dual<double> fs1Y = forwardLibor1Y / strike;
+	const cp::Dual<double> assetOrNothing1Y = log(fs1Y);
+	const double cashOrNothing1Y = 0.5 * volatility1Y * volatility1Y * 180.0 / 360.0;
+	const cp::Dual<double> d11Y = (assetOrNothing1Y + cashOrNothing1Y)
+		/ (volatility1Y * std::sqrt(180.0 / 360.0));
+
+	std::cout << "1Y d1_derivative:" << d11Y._derivative << std::endl;
+	const cp::Dual<double> d21Y = (log(forwardLibor1Y / strike)
+		- 0.5 * volatility1Y * volatility1Y * 180.0 / 360.0)
+		/ (volatility1Y * std::sqrt(180.0 / 360.0));
+
+	std::cout << "1Y d2_derivative:" << d21Y._derivative << std::endl;
+
+	const cp::Dual<double> capletPrice1Y = 180.0 / 360.0 * discountFactor[5]
+		* (forwardLibor1Y * cdfOfStandardNormalDistribution(d11Y)
+			- strike * cdfOfStandardNormalDistribution(d21Y));
+
+	std::cout << "capletPrice1Y:" << capletPrice1Y._value << std::endl;
+
+	const cp::Dual<double> cap1Y = capletPrice6M + capletPrice1Y;
+
+	std::cout << "cap1Y :" << cap1Y._value << std::endl;
+	std::cout << "derivative of cap1Y with forwardLibor6M :" << cap1Y._derivative << std::endl;
+	double x;
+	std::cin >> x;
+	// TODO: be able to input other type as template arguments 
 
     // for Dual test
-    const double a = 2.0;
-    const cp::Dual<double> b(10.0);
-    
-    cp::Dual<double> p = a + b;
-    cp::Dual<double> mi = a - b;
-    cp::Dual<double> mu = a * b;
-    cp::Dual<double> div = a / b;
+ //   const double a = 2.0;
+ //   const cp::Dual<double> b(10.0, 1.0);
+ //   
+ //   cp::Dual<double> p = a + b;
+ //   cp::Dual<double> mi = a - b;
+ //   cp::Dual<double> mu = a * b;
+ //   cp::Dual<double> div = a / b;
 
-	double z;
-    std::cout << p._derivative << std::endl;
-    std::cout << mi._derivative << std::endl;
-    std::cout << mu._derivative << std::endl;
-    std::cout << div._derivative << std::endl;
-	std::cin >> z;
+ //   std::cout << p._derivative << std::endl;
+ //   std::cout << mi._derivative << std::endl;
+ //   std::cout << mu._derivative << std::endl;
+ //   std::cout << div._derivative << std::endl;
     return 0;
 }
