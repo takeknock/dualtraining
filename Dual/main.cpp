@@ -112,10 +112,8 @@ int main()
 		* (discountFactor[4] / discountFactor[5] - 1.0);
 	const cp::Dual<double> forwardLibor1Y(forwardLiborValue1Y, 0.0);
 
-	const cp::Dual<double> fs1Y = forwardLibor1Y / strike;
-	const cp::Dual<double> assetOrNothing1Y = log(fs1Y);
-	const double cashOrNothing1Y = 0.5 * volatility1Y * volatility1Y * 180.0 / 360.0;
-	const cp::Dual<double> d11Y = (assetOrNothing1Y + cashOrNothing1Y)
+	const cp::Dual<double> d11Y = (log(forwardLibor1Y / strike) 
+		+ 0.5 * volatility1Y * volatility1Y * 180.0 / 360.0)
 		/ (volatility1Y * std::sqrt(180.0 / 360.0));
 
 	std::cout << "1Y d1_derivative:" << d11Y._derivative << std::endl;
