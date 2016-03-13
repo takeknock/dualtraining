@@ -78,15 +78,16 @@ namespace cp {
     Dual<double> operator *(
         const Dual<double>& x, const double y)
     {
-        return Dual<double>(x._value * y, x._derivative);
-    }
+		return Dual<double>(x._value * y,
+			x._derivative * y);
+	}
 
     Dual<double> operator /(
         const Dual<double>& x, const double y)
     {
-        return Dual<double>(x._value / y, 
-            x._derivative / y);
-    }
+		return Dual<double>(x._value / y,
+			(y * x._derivative) / (y * y));
+	}
     
 
     Dual<double> operator +(
@@ -106,20 +107,28 @@ namespace cp {
     Dual<double> operator *(
         const double x, const Dual<double>& y)
     {
-        return Dual<double>(x * y._value, 
-            y._derivative);
-    }
+		return Dual<double>(x * y._value,
+			x * y._derivative + y._value);
+	}
 
     Dual<double> operator /(
         const double x, const Dual<double>& y)
     {
-        return Dual<double>(x / y._value, 
-            (- x * y._derivative));
-    }
+		return Dual<double>(x / y._value,
+			(x * y._derivative) / (y._value * y._value));
+	}
 
 	Dual<double> log(const Dual<double>& x)
 	{
 		return Dual<double>(std::log(x._value), x._derivative / x._value);
+	}
+
+	Dual<double> cdfOfNormalDistribution(const Dual<double>& x)
+	{
+		boost::math::normal normalDistribution(0, 1);
+		double pi = boost::math::constants::pi<double>();
+		return Dual<double>(cdf(normalDistribution, x._value),
+			std::exp(-x._derivative * x._derivative * 0.5) / std::sqrt(2.0 * pi));
 	}
 } // namespace cp
 

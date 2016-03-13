@@ -3,6 +3,7 @@
 
 #include <boost/math/distributions/normal.hpp>
 #include <boost/numeric/ublas/vector.hpp>
+#include <boost/math/constants/constants.hpp>
 
 //#include <cppunit/brieftestprogresslistener.h>
 //#include <cppunit/compileroutputter.h>
@@ -13,11 +14,6 @@
 
 #include "Dual.h"
 //#include "dual_expression.h"
-
-const double cdfforderiv(const double derivative)
-{
-	return std::exp(-derivative) / std::sqrt(2.0 * 3.14 * derivative);
-}
 
 
 int main()
@@ -95,8 +91,10 @@ int main()
 		* (discountFactor[3] / discountFactor[4] - 1.0);
     const cp::Dual<double> forwardLibor(value);
 
-    const cp::Dual<double> d1 = (log(forwardLibor / strike)
-            + 0.5 * volatility * volatility * 30.0 / 360.0) 
+	const cp::Dual<double> fs = forwardLibor / strike;
+	const cp::Dual<double> assetOrNothing = log(fs);
+	const double cashOrNothing = 0.5 * volatility * volatility * 30.0 / 360.0;
+    const cp::Dual<double> d1 = (assetOrNothing + cashOrNothing) 
                 / (volatility * std::sqrt(30.0 / 360.0));
 
 	std::cout << "d1_derivative:" << d1._derivative << std::endl;
@@ -106,20 +104,18 @@ int main()
 
 	std::cout << "d2_derivative:" << d2._derivative << std::endl;
 
-	const cp::Dual<double> d1N(cdf(norm, d1._value), cdfforderiv(d1._derivative));
-	const cp::Dual<double> d2N(cdf(norm, d2._value), cdfforderiv(d2._derivative));
+    const cp::Dual<double> capletPrice6m = 180.0 / 360.0 * discountFactor[4] 
+		* (forwardLibor * cdfOfNormalDistribution(d1) 
+			- strike * cdfOfNormalDistribution(d2));
 
-    const cp::Dual<double> capletPrice6m = 180.0 / 360.0 * discountFactor[4] * (forwardLibor) * d1N - strike * d2N; 
-
-	std::cout << capletPrice6m._value << std::endl;
+	std::cout << "capletPrice6m:" << capletPrice6m._value << std::endl;
     //cp::black<double, double, double, double, double> f;
     //double price = f(strike, maturity, volatility, forwardRate, dayCountFraction);
     //std::cout << price << std::endl;
 
     // TODO: be able to input other type as template arguments 
 
-
-    // for test
+    // for Dual test
     const double a = 2.0;
     const cp::Dual<double> b(10.0);
     
