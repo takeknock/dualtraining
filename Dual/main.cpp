@@ -81,7 +81,6 @@ int main()
     //forwardLibor[8] =
     //    cp::Dual<double>(180.0 / 360.0 * (discountFactor[7] / discountFactor[8] - 1.0)); 
 
-
     // example: calculate 6M caplet
     const double strike = 0.01;
     const double volatility6M = 0.2;
@@ -93,19 +92,20 @@ int main()
 		+ 0.5 * volatility6M * volatility6M * 180.0 / 360.0)
         / (volatility6M * std::sqrt(180.0 / 360.0));
 
-	std::cout << "d1_derivative:" << d1._derivative << std::endl;
+	std::cout << "6M d1_derivative:" << d1._derivative << std::endl;
     const cp::Dual<double> d2 = (log(forwardLibor6M / strike)
             - 0.5 * volatility6M * volatility6M * 180.0 / 360.0) 
                 / (volatility6M * std::sqrt(180.0 / 360.0));
 
-	std::cout << "d2_derivative:" << d2._derivative << std::endl;
+	std::cout << "6M d2_derivative:" << d2._derivative << std::endl;
 
     const cp::Dual<double> capletPrice6M = 180.0 / 360.0 * discountFactor[4] 
 		* (forwardLibor6M * cdfOfStandardNormalDistribution(d1) 
 			- strike * cdfOfStandardNormalDistribution(d2));
 
 	std::cout << "capletPrice6m:" << capletPrice6M._value << std::endl;
-    
+	std::cout << "capletPrice6m derivative:" << capletPrice6M._derivative << std::endl;
+
 	// calculate 1Y caplet
 	const double volatility1Y = 0.5;
 	const double forwardLiborValue1Y = 180.0 / 360.0
@@ -130,6 +130,7 @@ int main()
 			- strike * cdfOfStandardNormalDistribution(d21Y));
 
 	std::cout << "capletPrice1Y:" << capletPrice1Y._value << std::endl;
+	std::cout << "capletPrice1Y derivative:" << capletPrice1Y._derivative << std::endl;
 
 	const cp::Dual<double> cap1Y = capletPrice6M + capletPrice1Y;
 
@@ -152,5 +153,17 @@ int main()
  //   std::cout << mi._derivative << std::endl;
  //   std::cout << mu._derivative << std::endl;
  //   std::cout << div._derivative << std::endl;
+
+	//result
+	//6M d1_derivative : 1523
+	//6M d2_derivative : 1523
+	//capletPrice6m : 2.36436e-12
+	//capletPrice6m derivative : 1.14953e-08
+	//1Y d1_derivative : 0
+	//1Y d2_derivative : 0
+	//capletPrice1Y : 0.000792079
+	//capletPrice1Y derivative : -0.226536
+	//cap1Y : 0.000792079
+	//derivative of cap1Y with forwardLibor6M : -0.226536
     return 0;
 }
