@@ -82,7 +82,7 @@ int main()
     //    cp::Dual<double>(180.0 / 360.0 * (discountFactor[7] / discountFactor[8] - 1.0)); 
 
     // example: calculate 6M caplet
-    const double strike = 0.01;
+    const double strike = 1;
     const double volatility6M = 0.2;
 	const double forwardLiborValue6M = 180.0 / 360.0
 		* (discountFactor[3] / discountFactor[4] - 1.0);
@@ -136,21 +136,13 @@ int main()
 	std::cout << "derivative of cap1Y with forwardLibor6M :" << cap1Y._derivative << std::endl;
 	double x;
 	std::cin >> x;
-	// TODO: be able to input other type as template arguments 
 
-    // for Dual test
- //   const double a = 2.0;
- //   const cp::Dual<double> b(10.0, 1.0);
- //   
- //   cp::Dual<double> p = a + b;
- //   cp::Dual<double> mi = a - b;
- //   cp::Dual<double> mu = a * b;
- //   cp::Dual<double> div = a / b;
-
- //   std::cout << p._derivative << std::endl;
- //   std::cout << mi._derivative << std::endl;
- //   std::cout << mu._derivative << std::endl;
- //   std::cout << div._derivative << std::endl;
+	// main flow plan	
+	//Underlying underlying(value);
+	//Caplet caplet(strike, maturity, underlying);
+	//Black black(volatility);
+	//const Dual<double> capletPrice = caplet.calculatePrice(model); //model.volatility, underlying.tenor
+	//const Dual<double> capPrice = sum(capletPrice);
 
 	//result
 	//6M d1_derivative : 1523
