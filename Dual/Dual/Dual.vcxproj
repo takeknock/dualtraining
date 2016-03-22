@@ -114,16 +114,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Dual.h" />
-    <ClInclude Include="Caplet.h" />
-    <ClInclude Include="IContract.h" />
-    <ClInclude Include="IModel.h" />
+    <ClInclude Include="Dual.h" />
+    <ClInclude Include="functions.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\interface.txt" />
+    <Text Include="interface.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
