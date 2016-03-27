@@ -155,5 +155,13 @@ int main()
 	//capletPrice1Y derivative : -0.226536
 	//cap1Y : 0.000792079
 	//derivative of cap1Y with forwardLibor6M : -0.226536
+
+    cp::Dual<double> x(2.0, 0.0);
+    cp::Dual<double> y(3.0, 1.0);
+    cp::Dual<double> z(3.0, 1.0);
+
+    cp::Dual<double> a = x + y + z;
+    
+
     return 0;
 }

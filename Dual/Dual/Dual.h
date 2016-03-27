@@ -4,6 +4,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 //#include "dual_expression.h"
 #include "functions.h"
+#include <complex>
 
 namespace cp {
     namespace ublas = boost::numeric::ublas;
@@ -11,23 +12,40 @@ namespace cp {
     class Dual {
     public:
         typedef V value_type;
+        typedef Dual<V> self_type;
         //typedef typename ublas::vector<V> vector_type;
     public:
         // first, 1 dim.
+        Dual()
+        {
+        }
+
         Dual(value_type value, value_type derivative)
         : _value(value), _derivative(derivative)
         {
         }
 
-
+        value_type getValue() const
+        {
+            return _value;
+        }
+        value_type getDerivative() const
+        {
+            return _derivative;
+        }
+        
+        self_type& operator =(const Dual<V>& rhs)
+        {
+            _value = rhs.getValue();
+            _derivative = rhs.getDerivative();
+            return *this;
+        }
+        
     public:
         value_type _value;
         //vector_type _derivative;
         value_type _derivative;
     };
-
-
-
 
     // operators as free functions
     //template <typename E1, typename E2>
@@ -132,29 +150,28 @@ namespace cp {
 	}
 
 
-    template<typename L, typename R>
-    class dual_plus {
-    public:
-        dual_plus(const L& lhs, const R& rhs)
-        : _lhs(lhs), _rhs(rhs)
-        {
-        }
-        Dual<double> operator()()
-        {
-            return lhs + rhs;
-        }
-    private:
-        const Dual<double>& _lhs;
-        const Dual<double>& _rhs;
-    };
+    //template<typename L, typename R>
+    //class dual_plus {
+    //public:
+    //    dual_plus(const L& lhs, const R& rhs)
+    //    : _lhs(lhs), _rhs(rhs)
+    //    {
+    //    }
 
-    template<typename L, typename R>
-    dual_plus<L, R> operator +(
-        const L& lhs, const R& rhs)
-    {
-        return dual_plus<L, R>(lhs, rhs);
-    }
+    //    Dual<double> operator()()
+    //    {
+    //        return lhs() + rhs();
+    //    }
+    //private:
+    //    const Dual<double>& _lhs;
+    //    const Dual<double>& _rhs;
+    //};
 
+    //template<typename L, typename R>
+    //dual_plus<L, R> operator +(const L& lhs, const R& rhs)
+    //{
+    //    return dual_plus<L, R>(lhs, rhs);
+    //}
 } // namespace cp
 
 #endif // DUAL_H_INCLUDED
