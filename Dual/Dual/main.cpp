@@ -37,7 +37,7 @@ int main()
     //// check equation
     //const double dayCountFraction = 20 / 360;
 
-    ublas::vector<double> discountFactor(9);
+    ublas::vector<double> discountFactor(16);
     discountFactor[0] = 0.9999; // O/N
     discountFactor[1] = 0.9988; // T/N
     discountFactor[2] = 0.9912; // 1W 
@@ -46,28 +46,29 @@ int main()
     discountFactor[5] = 0.96; // 1Y 
     discountFactor[6] = 0.94; // 1Y6M
     discountFactor[7] = 0.93; // 2Y
-    discountFactor[8] = 0.92; // 2Y6M
+    discountFactor[8] = 0.92; // 3Y
+    discountFactor[9] = 0.91; // 4Y 
+    discountFactor[10] = 0.90; // 5Y
+    discountFactor[11] = 0.89; // 6Y
+    discountFactor[12] = 0.889; // 7Y
+    discountFactor[13] = 0.88; // 8Y
+    discountFactor[14] = 0.87; // 9Y
+    discountFactor[15] = 0.86; // 10Y
 
-
-    // ublas::vector<cp::Dual<double> > forwardLibor(9);
+    ublas::vector<double> forwardLibor(9);
     // Let day count convention be ACT360, 
     // without thinking target date is whether business day or not.
     
     // today to O/N
-    //forwardLibor[0] = 
-    //    cp::Dual<double>(1.0 / 360.0 * (1.0 / discountFactor[0] - 1.0));
+    forwardLibor[0] = 1.0 / 360.0 * (1.0 / discountFactor[0] - 1.0);
     //// O/N to T/N
-    //forwardLibor[1] =
-    //    cp::Dual<double>(1.0 / 360.0 * (discountFactor[0] / discountFactor[1] - 1.0));
+    forwardLibor[1] = 1.0 / 360.0 * (discountFactor[0] / discountFactor[1] - 1.0);
     //// T/N to 1W
-    //forwardLibor[2] =
-    //    cp::Dual<double>(5.0 / 360.0 * (discountFactor[1] / discountFactor[2] - 1.0));
+    forwardLibor[2] = 5.0 / 360.0 * (discountFactor[1] / discountFactor[2] - 1.0);
     //// 1W to 1M
-    //forwardLibor[3] =
-    //    cp::Dual<double>(180.0 / 360.0 * (discountFactor[2] / discountFactor[3] - 1.0));
+    forwardLibor[3] = 180.0 / 360.0 * (discountFactor[2] / discountFactor[3] - 1.0);
     //// 1M to 6M
-    //forwardLibor[4] =
-    //    cp::Dual<double>(180.0 / 360.0 * (discountFactor[3] / discountFactor[4] - 1.0));
+    forwardLibor[4] = 180.0 / 360.0 * (discountFactor[3] / discountFactor[4] - 1.0);
     //// 6M to 1Y 
     //forwardLibor[5] =
     //    cp::Dual<double>(180.0 / 360.0 * (discountFactor[4] / discountFactor[5] - 1.0)); 
@@ -134,8 +135,7 @@ int main()
 
 	std::cout << "cap1Y :" << cap1Y._value << std::endl;
 	std::cout << "derivative of cap1Y with forwardLibor6M :" << cap1Y._derivative << std::endl;
-	double x;
-	std::cin >> x;
+
 
 	// main flow plan	
 	//Underlying underlying(value);
@@ -156,12 +156,33 @@ int main()
 	//cap1Y : 0.000792079
 	//derivative of cap1Y with forwardLibor6M : -0.226536
 
-    cp::Dual<double> x(2.0, 0.0);
-    cp::Dual<double> y(3.0, 1.0);
-    cp::Dual<double> z(3.0, 1.0);
+   // ATM Volatilities
+    ublas::vector<double> capVolatilities(7);
+    capVolatilities[0] = 1.86;// 1Y
+    capVolatilities[1] = 1.38;// 2Y
+    capVolatilities[2] = 1.05;// 3Y
+    capVolatilities[3] = 0.84;// 4Y
+    capVolatilities[4] = 0.71;// 5Y
+    capVolatilities[5] = 0.55;// 7Y
+    capVolatilities[6] = 0.43;// 10Y
 
-    cp::Dual<double> a = x + y + z;
+    // from cap vol to cap price
+    boost::math::normal norm(0,1);
     
+    const double libor1Y = 1.0 * (1.0 / discountFactor[5] - 1.0);
+    const double capRate = 0.1;
+    const double cap1Yd1 = 
+        (log(libor1Y / capRate) + 0.5 * capVolatilities[0] * capVolatilities[0] * 1.0)
+        / (capVolatilities[0] * 1.0);
+    const double cap1Yd2 =
+        (log(libor1Y / capRate) - 0.5 * capVolatilities[0] * capVolatilities[0] * 1.0)
+        / (capVolatilities[0] * 1.0);
+
+    const double capPrice1Y = 1.0 * discountFactor[5] * (libor1Y * cdf(norm, cap1Yd1) - capRate * cdf(norm, cap1Yd2));
+    std::cout << "cap volatility 1Y :" << capVolatilities[0] << std::endl;
+    std::cout << "capPrice1Y :" << capPrice1Y << std::endl;
+    double ddd;
+    std::cin >> ddd;
 
     return 0;
 }
