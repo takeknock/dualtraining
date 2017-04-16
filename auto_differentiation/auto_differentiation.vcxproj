@@ -112,7 +112,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="binary_expression.h" />
+    <ClInclude Include="binary_traits.h" />
     <ClInclude Include="ImportExportSwitch.h" />
+    <ClInclude Include="unary_traits.h" />
     <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
