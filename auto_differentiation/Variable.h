@@ -5,7 +5,7 @@ namespace ad {
     class Variable {
     public:
         DLL_API Variable(double x);
-        DLL_API double get();
+        DLL_API const double get() const;
     private:
         const double _x;
     };

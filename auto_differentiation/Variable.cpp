@@ -7,7 +7,7 @@ namespace ad {
     {
     }
     
-    double Variable::get()
+    const double Variable::get() const
     {
         return _x;
     }

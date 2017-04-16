@@ -9,9 +9,9 @@ namespace ad {
         :_e1(e1),_e2(e2)
         {}
 
-        DLL_API E1& e1()
+        DLL_API const E1& e1() const
             return _e1;
-        DLL_API E2& e2()
+        DLL_API const E2& e2() const
             return _e2;
 
     private:
