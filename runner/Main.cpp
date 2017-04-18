@@ -8,6 +8,7 @@
 #include "..\auto_differentiation\Constant.h"
 #include "..\auto_differentiation\binary_expression.h"
 #include "..\auto_differentiation\operators.h"
+#include "..\auto_differentiation\evals.h"
 
 int main()
 {
@@ -23,7 +24,8 @@ int main()
     std::cout << typeid(res2).name() << std::endl;
     std::cout << typeid(y).name() << std::endl;
     namespace ublas = boost::numeric::ublas;
-    
+
+    std::cout << ad::eval(y) << std::endl;
 
 
 
