@@ -19,4 +19,10 @@ namespace ad {
     {
         return diff(e.e1()) + diff(e.e2());
     }
+
+    template<typename E1, typename E2>
+    auto diff(binary_expression<sub_op, E1, E2>& e)
+    {
+        return diff(e.e1()) - diff(e.e2());
+    }
 } // namespace ad {
