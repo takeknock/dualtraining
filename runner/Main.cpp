@@ -9,6 +9,7 @@
 #include "..\auto_differentiation\binary_expression.h"
 #include "..\auto_differentiation\operators.h"
 #include "..\auto_differentiation\evals.h"
+#include "..\auto_differentiation\diffs.h"
 
 int main()
 {
@@ -17,16 +18,18 @@ int main()
     ad::Constant c1 = ad::Constant(1.0);
     //ad::binary_expression res = v + c1;
 
-    ad::binary_expression<ad::add_op, ad::Variable, double> res = v + 2.0;
-    ad::binary_expression<ad::sub_op, ad::Variable, ad::Variable> res2 = v - v2;
-    auto y = res + res2;
+    ad::binary_expression<ad::mul_op, ad::Variable, double> res = v * 2.0;
+    ad::binary_expression<ad::sub_op, ad::Constant, ad::Variable> res2 = c1 - v;
+    auto y = res2 - res;
     std::cout << typeid(res).name() << std::endl;
     std::cout << typeid(res2).name() << std::endl;
     std::cout << typeid(y).name() << std::endl;
+
+
     namespace ublas = boost::numeric::ublas;
 
     std::cout << ad::eval(y) << std::endl;
-
+    std::cout << ad::diff(y) << std::endl;
 
 
     //int n = 5;

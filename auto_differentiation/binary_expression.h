@@ -11,7 +11,7 @@ namespace ad {
     template<typename OP, typename E1, typename E2>
     class binary_expression {
     public:
-        binary_expression<OP, E1, E2>(const E1& e1, const E2& e2)
+        explicit binary_expression<OP, E1, E2>(const E1& e1, const E2& e2)
         :_e1(e1),_e2(e2)
         {}
 

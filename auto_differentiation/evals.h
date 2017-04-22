@@ -15,6 +15,11 @@ namespace ad {
         return e;
     }
 
+    auto eval(const ad::Constant& e)
+    {
+        return e.get();
+    }
+
     template<typename E1, typename E2>
     auto eval(const binary_expression<add_op, E1, E2>& e)
     {
