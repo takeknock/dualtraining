@@ -38,4 +38,12 @@ namespace ad {
         return diff(e.e1()) * eval(e.e2()) + diff(e.e2()) * eval(e.e1());
     }
 
+    template<typename E1, typename E2>
+    auto diff(const binary_expression<div_op, E1, E2>& e)
+    {
+        return (eval(e.e1()) * diff(e.e2()) + diff(e.e1()) * eval(e.e2()))
+            / (eval(e.e1()) * eval(e.e2()));
+    }
+
+
 } // namespace ad {
