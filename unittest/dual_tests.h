@@ -1,7 +1,8 @@
 #pragma once
 
+
 #include <gtest\gtest.h>
 
-class eval_tests : public testing::Test {
+class dual_tests : public testing::Test {
 
 };
