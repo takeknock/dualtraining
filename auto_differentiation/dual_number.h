@@ -25,6 +25,7 @@ namespace ad
 
         }
 
+        // operators for dual_number v.s. dual_number
         inline this_type& operator+=(const this_type& rhs)
         {
             _e += rhs.e();
@@ -69,6 +70,63 @@ namespace ad
         }
 
         inline this_type& operator /(const this_type& rhs)
+        {
+            return this_type(*this) /= rhs;
+        }
+
+        // operators for any rhs types
+        template<typename ER, typename DR>
+        inline this_type& operator+=(const dual_number<ER, DR>& rhs)
+        {
+            _e += rhs.e();
+            _d += rhs.d();
+            return this*;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator-=(const dual_number<ER, DR>& rhs)
+        {
+            _e -= rhs.e();
+            _d -= rhs.d();
+            return this*;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator*=(const dual_number<ER, DR>& rhs)
+        {
+            _e *= rhs.e();
+            _d = _d * rhs.e() + _e * rhs.d();
+            return this*;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator/=(const dual_number<ER, DR>& rhs)
+        {
+            _e /= rhs.e();
+            _d = (_d * rhs.e() - _e * rhs.d()) / (rhs.e() * rhs.e());
+            return this*;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator +(const dual_number<ER, DR>& rhs)
+        {
+            return this_type(*this) += rhs;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator -(const dual_number<ER, DR>& rhs)
+        {
+            return this_type(*this) -= rhs;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator *(const dual_number<ER, DR>& rhs)
+        {
+            return this_type(*this) *= rhs;
+        }
+
+        template<typename ER, typename DR>
+        inline this_type& operator /(const dual_number<ER, DR>& rhs)
         {
             return this_type(*this) /= rhs;
         }
