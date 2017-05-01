@@ -117,6 +117,7 @@
     <ClInclude Include="BUExpansion.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="diffs.h" />
+    <ClInclude Include="dual_number.h" />
     <ClInclude Include="evals.h" />
     <ClInclude Include="ImportExportSwitch.h" />
     <ClInclude Include="operators.h" />
